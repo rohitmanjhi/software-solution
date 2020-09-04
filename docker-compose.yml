@@ -1,0 +1,26 @@
+version: "2"
+
+services:
+    web:
+        build:
+            context: solution
+        command: python3 manage.py runserver 0.0.0.0:8000
+        expose:
+            - 8000
+        env_file: ${PWD}/solution/.env
+        restart: always
+        volumes:
+            - static_volume:/usr/src/app/staticfiles
+            - ${PWD}/solution:/usr/src/app
+    nginx:
+        build:
+            context: nginx_solution
+        volumes:
+            - static_volume:/usr/src/app/staticfiles
+        restart: always
+        ports:
+            - "1338:80"
+        depends_on:
+            - web
+volumes:
+    static_volume:

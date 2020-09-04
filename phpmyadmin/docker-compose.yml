@@ -1,0 +1,16 @@
+version: "2"
+services:
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        restart: always
+        ports:
+            - "9095:80"
+        environment:
+            PMA_HOST: solution_db
+            MYSQL_ROOT_PASSWORD: rohit123
+        networks:
+            - "solution_default"
+
+networks:
+    solution_default:
+        external: true

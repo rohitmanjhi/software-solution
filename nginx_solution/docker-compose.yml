@@ -1,0 +1,41 @@
+version: "3.4"
+services:
+    certbot_nginx:
+        image: "jwilder/nginx-proxy"
+        container_name: certbot_nginx
+        restart: always
+        networks:
+            - "solution_default"
+        ports:
+            - "80:80"
+            - "443:443"
+        volumes:
+            - /var/run/docker.sock:/tmp/docker.sock:ro
+            - nginx-certs:/etc/nginx/certs
+            - nginx-vhost:/etc/nginx/vhost.d
+            - nginx-html:/usr/share/nginx/html
+
+    letsencrypt:
+        image: "jrcs/letsencrypt-nginx-proxy-companion"
+        container_name: letsencrypt
+        restart: always
+        networks:
+            - "solution_default"
+        depends_on:
+            - certbot_nginx
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock:ro
+            - nginx-certs:/etc/nginx/certs
+            - nginx-vhost:/etc/nginx/vhost.d
+            - nginx-html:/usr/share/nginx/html
+        environment:
+            - NGINX_PROXY_CONTAINER=certbot_nginx
+
+networks:
+    solution_default:
+        external: true
+
+volumes:
+    nginx-certs:
+    nginx-vhost:
+    nginx-html:

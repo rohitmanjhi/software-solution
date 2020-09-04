@@ -1,0 +1,23 @@
+version: "2"
+services:
+    solution_db:
+        image: mysql
+        container_name: "solution_db"
+        volumes:
+            - ./files:/docker-entrypoint-initdb.d
+            - ./data/db:/var/lib/mysql
+        restart: always
+        ports:
+            - "3305:3305"
+        environment:
+            MYSQL_DATABASE: solution
+            MYSQL_ROOT_PASSWORD: rohit123
+        security_opt:
+            - seccomp:unconfined
+        command: --default-authentication-plugin=mysql_native_password
+        networks:
+            - "solution_default"
+
+networks:
+    solution_default:
+        external: true
